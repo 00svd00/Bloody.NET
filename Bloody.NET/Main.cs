@@ -35,10 +35,6 @@ namespace Bloody.NET
             _ctrlStream = ctrlStream;
         }
 
-        private static void Main()
-        {
-            Console.WriteLine("Hello");
-        }
 
         public static BloodyKeyboard Initialize()
         {

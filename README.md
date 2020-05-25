@@ -1,2 +1,2 @@
 # Bloody.NET
-Fork of Vulkan.NET tryining to rewrite some of it to make support for bloody b930 
+A dotnet library to control Bloody B930 keyboard, forked from Vulcan.NET

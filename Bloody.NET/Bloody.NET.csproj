@@ -1,8 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>GeorgeGhost</Authors>
+    <Company>GeorgeGhost</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/GeorgeGhost/Bloody.NET</RepositoryUrl>
+    <Description>A dotnet library to control Bloody B930 keyboard, forked from Vulcan.NET</Description>
   </PropertyGroup>
 
   <ItemGroup>
