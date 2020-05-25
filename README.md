@@ -1,2 +1,2 @@
-# Vulcan.NET
-dotnet library to control RGB on Roccat Vulcan 100 and 120
+# Bloody.NET
+Fork of Vulkan.NET tryining to rewrite some of it to make support for bloody b930 

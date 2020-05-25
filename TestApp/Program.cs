@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vulcan.NET;
+using Bloody.NET;
 using System.Drawing;
 using System.Diagnostics;
 
@@ -13,21 +13,21 @@ namespace TestApp
     {
         static void Main()
         {
-            using (VulcanKeyboard keyboard = VulcanKeyboard.Initialize())
+            using (BloodyKeyboard keyboard = BloodyKeyboard.Initialize())
             {
                 if (keyboard == null)
                 {
-                    Console.WriteLine("Did not find vulcan!");
+                    Console.WriteLine("Did not find bloody!");
                     Console.ReadLine();
                     return;
                 }
 
-                Console.WriteLine("Found Vulcan!");
-                keyboard.SetColor(Color.Red);
+                Console.WriteLine("Found Bloody!");
+                //keyboard.SetColor(Color.Red);
                 keyboard.SetKeyColor(Key.W, Color.Blue);
-                keyboard.SetKeyColor(Key.A, Color.Blue);
-                keyboard.SetKeyColor(Key.S, Color.Blue);
-                keyboard.SetKeyColor(Key.D, Color.Blue);
+                //keyboard.SetKeyColor(Key.A, Color.Blue);
+                //keyboard.SetKeyColor(Key.S, Color.Blue);
+                //keyboard.SetKeyColor(Key.D, Color.Blue);
 
                 var watch = new Stopwatch();
                 watch.Start();

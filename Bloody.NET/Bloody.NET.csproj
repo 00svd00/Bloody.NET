@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bloody.NET\Bloody.NET.csproj" />
+    <PackageReference Include="HidSharp" Version="2.1.0" />
   </ItemGroup>
 
 </Project>
