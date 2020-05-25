@@ -89,21 +89,163 @@ namespace Bloody.NET
 
         private bool SendCtrlInitSequence()
         {
-            int size = _ctrlDevice.GetMaxFeatureReportLength();
-            Console.WriteLine(size);
-            _ctrlStream?.Close();
+            var result =
 
-            return true;
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x05) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x29) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x05) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x07) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x2a) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x2a) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1f) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x29) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x1e01) &&
+
+                SetCtrlReport(CtrlReports._0x09) &&
+
+                SetCtrlReport(CtrlReports._0x05) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x2f002d) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x0c) &&
+
+                SetCtrlReport(CtrlReports._0x0c) &&
+
+                SetCtrlReport(CtrlReports._0x030605) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x06) &&
+
+                SetCtrlReport(CtrlReports._0x030601) &&
+
+                SetCtrlReport(CtrlReports._0x030605) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x030601) &&
+
+                SetCtrlReport(CtrlReports._0x030607) &&
+
+                SetCtrlReport(CtrlReports._0x030608) &&
+
+                SetCtrlReport(CtrlReports._0x030609) &&
+
+                SetCtrlReport(CtrlReports._0x03060a) &&
+
+                SetCtrlReport(CtrlReports._0x03060b) &&
+
+                SetCtrlReport(CtrlReports._0x03060c) &&
+
+                SetCtrlReport(CtrlReports._0x030605) &&
+
+                GetCtrlReport(0x07) &&
+
+                SetCtrlReport(CtrlReports._0x030606) &&
+
+                GetCtrlReport(0x07)
+
+
+
+
+                ;
+
+
+            //_ctrlStream?.Close();
+
+            return result;
         }
 
         private bool GetCtrlReport(byte report_id)
         {
             int size = _ctrlDevice.GetMaxFeatureReportLength();
+            //Console.WriteLine(size);
             var buf = new byte[size];
             buf[0] = report_id;
             try
             {
                 _ctrlStream.GetFeature(buf);
+                Console.WriteLine("GetClrlReport");
                 return true;
             }
             catch
@@ -117,6 +259,8 @@ namespace Bloody.NET
             try
             {
                 _ctrlStream.SetFeature(reportBuffer);
+                Console.WriteLine("SetClrlReport");
+                Console.WriteLine(BitConverter.ToString(reportBuffer).Replace("-", " "));
                 return true;
             }
             catch
@@ -125,6 +269,7 @@ namespace Bloody.NET
             }
         }
 
+        //Waits for Success packet to be recived from Keyboard
         private bool WaitCtrlDevice()
         {
             int size = _ctrlDevice.GetMaxFeatureReportLength();
@@ -181,7 +326,7 @@ namespace Bloody.NET
             {
                 Console.WriteLine("1.");
                 Console.WriteLine(BitConverter.ToString(packet).Replace("-", " "));
-                _ledStream.Write(packet);
+                _ctrlStream.SetFeature(packet);
                 Console.WriteLine("Test2");
                 for (int i = 1; i <= 6; i++)//each chunk consists of the byte 0x00 and 64 bytes of data after that
                 {
@@ -192,7 +337,7 @@ namespace Bloody.NET
                     Array.Copy(_keyColors, (i * 58) - 58, packet, 6, 58);
                     Console.WriteLine($"{i + 1}.");
                     Console.WriteLine(BitConverter.ToString(packet).Replace("-", " "));
-                    _ledStream.Write(packet);
+                    _ctrlStream.SetFeature(packet);
                 }
                 return true;
             }

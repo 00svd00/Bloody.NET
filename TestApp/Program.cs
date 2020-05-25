@@ -23,17 +23,19 @@ namespace TestApp
                 }
 
                 Console.WriteLine("Found Bloody!");
-                //keyboard.SetColor(Color.Red);
-                keyboard.SetKeyColor(Key.W, Color.Blue);
-                //keyboard.SetKeyColor(Key.A, Color.Blue);
-                //keyboard.SetKeyColor(Key.S, Color.Blue);
-                //keyboard.SetKeyColor(Key.D, Color.Blue);
+                keyboard.SetColor(Color.Yellow);
+                keyboard.SetKeyColor(Key.W, Color.Red);
+                keyboard.SetKeyColor(Key.A, Color.Blue);
+                keyboard.SetKeyColor(Key.S, Color.Green);
+                keyboard.SetKeyColor(Key.D, Color.White);
 
                 var watch = new Stopwatch();
                 watch.Start();
                 bool success = keyboard.Update();
                 Console.WriteLine("Set colors: " + success + ", took :" + watch.ElapsedMilliseconds + "ms");
                 watch.Stop();
+
+
                 Console.ReadLine();
                 Console.WriteLine("Disconnecting...");
             }
