@@ -11,7 +11,6 @@ namespace Bloody.NET
 
     public sealed class BloodyKeyboard : IDisposable
     {
-        private const int MaxTries = 100;
         private const int VendorId = 0x09DA;
         private const int ProductId = 0xFA44;
         private const uint LedUsagePage = 0x000C; //ff52 //0001 //000C
@@ -20,7 +19,6 @@ namespace Bloody.NET
         private static readonly byte[] ColorPacketNumber = new byte[7] { 0x01, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c };
         private readonly byte[] _keyColors = new byte[348];//(64-4-2)*2*3
 
-        private readonly HidDevice _ledDevice;
         private readonly HidStream _ledStream;
         private readonly HidDevice _ctrlDevice;
         private readonly HidStream _ctrlStream;
@@ -29,7 +27,6 @@ namespace Bloody.NET
 
         private BloodyKeyboard(HidDevice ledDevice, HidStream ledStream, HidDevice ctrlDevice, HidStream ctrlStream)
         {
-            _ledDevice = ledDevice;
             _ledStream = ledStream;
             _ctrlDevice = ctrlDevice;
             _ctrlStream = ctrlStream;
@@ -42,7 +39,6 @@ namespace Bloody.NET
 
             if (!devices.Any())
             {
-                Console.WriteLine("N1");
                 return null;
             }
             try
@@ -51,22 +47,9 @@ namespace Bloody.NET
                 HidDevice ctrlDevice = devices.First(d => d.GetMaxFeatureReportLength() > 50);
                 HidStream ledStream = null;
                 HidStream ctrlStream = null;
-                Console.WriteLine(ledDevice + "led");
-                Console.WriteLine(ctrlDevice + "ctrl");
-                if (ctrlDevice?.TryOpen(out ctrlStream) ?? false)
-                {
-                    Console.WriteLine("Y5");
-                }
-                if (ledDevice?.TryOpen(out ledStream) ?? false)
-                {
-                    Console.WriteLine("Success");
-                }
-
                 if ((ctrlDevice?.TryOpen(out ctrlStream) ?? false) && (ledDevice?.TryOpen(out ledStream) ?? false))
                 {
                     BloodyKeyboard kb = new BloodyKeyboard(ledDevice, ledStream, ctrlDevice, ctrlStream);
-                    Console.WriteLine(kb);
-                    Console.WriteLine("Connection Established");
                     if (kb.SendCtrlInitSequence())
                         return kb;
                 }
@@ -74,15 +57,13 @@ namespace Bloody.NET
                 {
                     ctrlStream?.Close();
                     ledStream?.Close();
-                    Console.WriteLine("N2");
                 }
             }
             catch
             { }
             return null;
         }
-        #region Colour setting ToBeChanged
-
+        #region Initial Reports
         private bool SendCtrlInitSequence()
         {
             var result =
@@ -219,15 +200,7 @@ namespace Bloody.NET
 
                 SetCtrlReport(CtrlReports._0x030606) &&
 
-                GetCtrlReport(0x07)
-
-
-
-
-                ;
-
-
-            //_ctrlStream?.Close();
+                GetCtrlReport(0x07);
 
             return result;
         }
@@ -235,13 +208,11 @@ namespace Bloody.NET
         private bool GetCtrlReport(byte report_id)
         {
             int size = _ctrlDevice.GetMaxFeatureReportLength();
-            //Console.WriteLine(size);
             var buf = new byte[size];
             buf[0] = report_id;
             try
             {
                 _ctrlStream.GetFeature(buf);
-                Console.WriteLine("GetClrlReport");
                 return true;
             }
             catch
@@ -255,8 +226,7 @@ namespace Bloody.NET
             try
             {
                 _ctrlStream.SetFeature(reportBuffer);
-                Console.WriteLine("SetClrlReport");
-                Console.WriteLine(BitConverter.ToString(reportBuffer).Replace("-", " "));
+                //Console.WriteLine(BitConverter.ToString(reportBuffer).Replace("-", " "));
                 return true;
             }
             catch
@@ -264,31 +234,9 @@ namespace Bloody.NET
                 return false;
             }
         }
-
-        //Waits for Success packet to be recived from Keyboard
-        private bool WaitCtrlDevice()
-        {
-            int size = _ctrlDevice.GetMaxFeatureReportLength();
-            byte[] buf = new byte[size];
-            buf[0] = 0x04;
-            for (int i = 0; i < MaxTries; i++)
-            {
-                Thread.Sleep(150);
-                try
-                {
-                    _ctrlStream.GetFeature(buf);
-                    if (buf[1] == 0x01)
-                        return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            return false;
-        }
-
-        public void SetColors(Dictionary<Key, Color> keyColors) //TBC
+        #endregion
+        #region Set Colors
+        public void SetColors(Dictionary<Key, Color> keyColors) 
         {
             foreach (var key in keyColors)
                 SetKeyColor(key.Key, key.Value);
@@ -296,11 +244,11 @@ namespace Bloody.NET
 
         public void SetColor(Color clr)
         {
-            foreach (Key key in (Key[])Enum.GetValues(typeof(Key))) //TBC
+            foreach (Key key in (Key[])Enum.GetValues(typeof(Key))) 
                 SetKeyColor(key, clr);
         }
 
-        public void SetKeyColor(Key key, Color clr) //TBC
+        public void SetKeyColor(Key key, Color clr) 
         {
             int offset = (int)key;
             _keyColors[offset + 0] = clr.R;
@@ -313,44 +261,29 @@ namespace Bloody.NET
         {
             byte[] packet = new byte[64];
             ColorPacketHeader.CopyTo(packet, 0);//header at the beginning of the first packet
-            Array.Copy(new byte[61], 0,
-                        packet, ColorPacketHeader.Length,
-                        61);//copy the first 60 bytes of color data to the packet
-                            //so 60 data + 5 header fits in a packet
+            Array.Copy(new byte[61], 0, packet, ColorPacketHeader.Length, 61);
             Array.Copy(ColorPacketNumber, 0, packet, 3, 1);
             try
             {
-                Console.WriteLine("1.");
-                Console.WriteLine(BitConverter.ToString(packet).Replace("-", " "));
+                //Console.WriteLine(BitConverter.ToString(packet).Replace("-", " "));
                 _ctrlStream.SetFeature(packet);
-                Console.WriteLine("Test2");
                 for (int i = 1; i <= 6; i++)//each chunk consists of the byte 0x00 and 64 bytes of data after that
                 {
-                    Console.WriteLine("Test3");
                     ColorPacketHeader.CopyTo(packet, 0);
                     Array.Copy(ColorPacketNumber, i, packet, 3, 1);
-                    //  packet[0] = 0x00;
                     Array.Copy(_keyColors, (i * 58) - 58, packet, 6, 58);
-                    Console.WriteLine($"{i + 1}.");
-                    Console.WriteLine(BitConverter.ToString(packet).Replace("-", " "));
+                    //Console.WriteLine(BitConverter.ToString(packet).Replace("-", " "));
                     _ctrlStream.SetFeature(packet);
                 }
                 return true;
             }
             catch
             {
-               Console.WriteLine("False");
                Disconnect();
                return false;
             }
         }
-#endregion
-        public void Disconnect()
-        {
-            _ctrlStream?.Close();
-            _ledStream?.Close();
-        } 
-
+        #endregion
         private static HidDevice GetFromUsages(IEnumerable<HidDevice> devices, uint usagePage, uint usage)
         {
             foreach (var dev in devices) //For each dev in devices under Vid Pid
@@ -358,15 +291,11 @@ namespace Bloody.NET
                 try
                 {
                     var raw = dev.GetRawReportDescriptor();
-                    // Console.WriteLine(raw);
                     var usages = EncodedItem.DecodeItems(raw, 0, raw.Length).Where(t => t.TagForGlobal == GlobalItemTag.UsagePage);
-                    // Console.WriteLine(usages);
                     if (usages.Any(g => g.ItemType == ItemType.Global && g.DataValue == usagePage))
                     {
-                        Console.WriteLine("Y3");
                         if (usages.Any(l => l.ItemType == ItemType.Local && l.DataValue == usage))
                         {
-                            Console.WriteLine("Y4");
                             return dev;
                         }
                     }
@@ -378,6 +307,13 @@ namespace Bloody.NET
             }
             return null;
         }
+
+        public void Disconnect()
+        {
+            _ctrlStream?.Close();
+            _ledStream?.Close();
+        }
+
         #region IDisposable Support
         /// <summary>
         /// Disconnects the keyboard when disposing
