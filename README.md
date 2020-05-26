@@ -1,2 +1,2 @@
-# Bloody.NET
-A dotnet library to control Bloody B930 keyboard, forked from Vulcan.NET
+# Vulcan.NET
+dotnet library to control RGB on Roccat Vulcan 100 and 120
