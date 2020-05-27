@@ -1,11 +1,7 @@
 ﻿namespace Bloody.NET
 {
-    /// <summary>
-    /// Represents all available keys on the keyboard
-    /// </summary>
     public enum Key
     {
-#pragma warning disable CS1591//No comments for key definitions
         ESC = 0,
         F1 = 1,
         F2 = 2,

@@ -1,21 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net461</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>GeorgeGhost</Authors>
-    <Description>A dotnet library to control Bloody B930 keyboard, forked from Vulcan.NET</Description>
+    <Company>GeorgeGhost</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/GeorgeGhost/Bloody.NET</RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.3</Version>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>D:\Documents\USBDDriverProj\ConvertVulcan2Bloody\Vulcan.NET\Vulcan.NET\Bloody.NET.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Documents\USBDDriverProj\ConvertVulcan2Bloody\Vulcan.NET\Vulcan.NET\Bloody.NET.xml</DocumentationFile>
+    <Description>A dotnet library to control Bloody B930 keyboard, forked from Vulcan.NET</Description>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <FileVersion>1.0.0.2</FileVersion>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
