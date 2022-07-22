@@ -12,7 +12,6 @@ namespace Bloody.NET
     public sealed class BloodyKeyboard : IDisposable
     {
         private const int VendorId = 0x09DA;
-        private const int ProductId = 0xFA44;
         private const uint LedUsagePage = 0x000C; //(ff52,0001,000C) //List of UsagePage+UsageID I found from Windows Device Manager(labed there as Uxxxx&&UPxxxx)
         private const uint LedUsage = 0x0001; //(0244,/0080,0001)
         private static readonly byte[] ColorPacketHeader = new byte[3] { 0x07, 0x03, 0x06 }; 
@@ -23,8 +22,11 @@ namespace Bloody.NET
         private readonly HidDevice _ctrlDevice;
         private readonly HidStream _ctrlStream;
 
-
-
+        static List<int?> products = new List<int?> 
+        { 
+            0xFA10,  //B810r
+            0xFA44   //B930
+        };
         private BloodyKeyboard(HidDevice ledDevice, HidStream ledStream, HidDevice ctrlDevice, HidStream ctrlStream)
         {
             _ledStream = ledStream;
@@ -34,9 +36,17 @@ namespace Bloody.NET
 
 
         public static BloodyKeyboard Initialize()
-        {
-            var devices = DeviceList.Local.GetHidDevices(vendorID: VendorId, productID: ProductId); //Find device with given VID PID
+        {   
+            IEnumerable<HidDevice> devices = null;
+            foreach (int? id in BloodyKeyboard.products)
+            {
+                devices = DeviceList.Local.GetHidDevices(vendorID: VendorId, productID: id); //Try to find Bloody B930 with given VID PID
 
+                if (devices.Any())
+                {
+                    break;
+                }
+            }
             if (!devices.Any())
             {
                 return null;
