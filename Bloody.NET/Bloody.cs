@@ -40,7 +40,7 @@ namespace Bloody.NET
             IEnumerable<HidDevice> devices = null;
             foreach (int? id in BloodyKeyboard.products)
             {
-                devices = DeviceList.Local.GetHidDevices(vendorID: VendorId, productID: id); //Try to find Bloody B930 with given VID PID
+                devices = DeviceList.Local.GetHidDevices(vendorID: VendorId, productID: id); //Find device with given VID PID
 
                 if (devices.Any())
                 {
