@@ -1,5 +1,9 @@
 # Bloody.NET
 A dotnet library to control Bloody B930 keyboard, forked from Vulcan.NET
+Added support for B810r and B975. Seems that bloody KB have two ProductID:
+0xFA44 - for TKL keyboards
+0xFA10 - for Full-sized keyboards
+So for now it may support ALL bloody keyboards
 
 RGB Packet Structure:
 - All packets sent to the keyboard which involve anything to do with rgb are 64 bytes long.
